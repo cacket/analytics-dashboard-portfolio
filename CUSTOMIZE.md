@@ -85,6 +85,6 @@ Po podłączeniu własnych danych możesz ustawić `demo: false`, żeby ukryć o
 
 ## 5. Wykorzystanie i publikacja
 
-Możesz kopiować, modyfikować i wykorzystywać projekt, także komercyjnie, na warunkach licencji MIT. Zachowaj plik `LICENSE` i zawartą w nim notę przy rozpowszechnianiu kodu. W interfejsie możesz użyć własnej marki i stopki.
+Projekt jest darmowy do wykorzystania w osobistym portfolio. Możesz go kopiować, edytować, dostosowywać i udostępniać jako część swojego portfolio, bez opłaty i bez obowiązkowego podpisu w interfejsie. Ta zgoda dotyczy wyłącznie użycia w portfolio; jej treść znajduje się w `LICENSE`.
 
 Do działającej strony potrzebujesz `index.html`, `styles.css`, `dashboard.config.js` i `app.js`. Folder `.tools` służy do lokalnego podglądu i testowania; nie jest wymagany do działania dashboardu. Instrukcja publikacji na GitHub Pages znajduje się w `README.md`.

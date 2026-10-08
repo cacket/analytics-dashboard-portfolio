@@ -14,4 +14,4 @@ http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': types[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-store' });
     res.end(data);
   });
-}).listen(4180, '127.0.0.1', () => console.log('Boos preview: http://127.0.0.1:4180'));
+}).listen(4180, '127.0.0.1', () => console.log('Dashboard preview: http://127.0.0.1:4180'));

@@ -1,10 +1,10 @@
-# Boos — Business Analytics Dashboard
+# Business Analytics Dashboard — Portfolio Project
 
-A front-end **portfolio project** showcasing responsive UI development, accessible interactions, data visualization and reusable application configuration.
+A free, editable front-end **portfolio project** showcasing responsive UI development, accessible interactions, data visualization and reusable application configuration. Made for personal portfolios, with sample data throughout.
 
 A reusable business analytics dashboard with a black canvas, muted slate-blue accents and white typography. Built entirely with **HTML, CSS and vanilla JavaScript**. No framework, build step, remote fonts or runtime dependencies.
 
-![Boos dashboard preview](assets/preview.png)
+![Business analytics dashboard preview](assets/preview.png)
 
 ## Make it your own
 
@@ -12,7 +12,7 @@ Start with **`dashboard.config.js`**. Set your brand, workspace, profile, curren
 
 For a step-by-step guide in Polish, see [CUSTOMIZE.md](CUSTOMIZE.md).
 
-You can use, modify and integrate this dashboard into personal or commercial projects under the MIT license. Keep the license notice when redistributing the code. No visible Boos attribution is required in your interface.
+**Free for portfolio use.** You may copy, edit, customize and share this project as part of your personal portfolio. Replace the text, colors, layout and demo data to make it your own. No payment or visible attribution is required. This permission is limited to portfolio use; see `LICENSE`.
 
 ## Run locally
 
@@ -55,8 +55,8 @@ The default configuration is a portfolio demonstration. Notifications, profile i
 
 ## Browser checks
 
-With the preview server running and Playwright installed in your test environment, run `node .tools/check.cjs`. Alternatively, set `BOOS_PLAYWRIGHT_PATH` to an existing `@playwright/test` installation. The checks cover six viewport widths (320–1920px), navigation, keyboard access, filtering, CSV content, dialogs, saved colors and opening the page directly from disk. A separate configuration test verifies a custom brand, Polish currency formatting, actual chart arrays, optional sections and branded CSV exports. Screenshots are saved to the ignored `.verification` folder.
+With the preview server running and Playwright installed in your test environment, run `node .tools/check.cjs`. Alternatively, set `DASHBOARD_PLAYWRIGHT_PATH` to an existing `@playwright/test` installation. The checks cover six viewport widths (320–1920px), navigation, keyboard access, filtering, CSV content, dialogs, saved colors and opening the page directly from disk. A separate configuration test verifies a custom brand, Polish currency formatting, actual chart arrays, optional sections and branded CSV exports. Screenshots are saved to the ignored `.verification` folder.
 
-## License
+## Free portfolio use
 
-MIT. See `LICENSE`.
+Free to use and edit for personal portfolio projects. See `LICENSE` for the portfolio-use permission.

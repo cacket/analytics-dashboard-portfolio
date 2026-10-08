@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090b10">
-  <meta name="description" content="Boos — a responsive business analytics dashboard built with vanilla HTML, CSS and JavaScript.">
-  <title>Boos — Business Analytics</title>
+  <meta name="description" content="A free, editable business analytics dashboard for portfolio projects, built with HTML, CSS and vanilla JavaScript.">
+  <title>Dashboard — Business Analytics</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%232f6bff'/%3E%3Cpath d='M12 27V13h10a4 4 0 0 1 0 8h-6m0 0h7a3 3 0 0 1 0 6H12' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
   <script src="dashboard.config.js" defer></script>
@@ -15,7 +15,7 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <div class="app-shell">
     <aside class="rail" aria-label="Quick access">
-      <a class="brand-mark" href="#overview" aria-label="Boos home">b<span>↗</span></a>
+      <a class="brand-mark" href="#overview" aria-label="Dashboard home">d<span>↗</span></a>
       <div class="rail-center">
         <button class="icon-button active" data-view="overview" aria-label="Overview" data-icon="grid"></button>
         <button class="icon-button" data-view="analytics" aria-label="Analytics" data-icon="chart"></button>
@@ -26,8 +26,8 @@
     </aside>
     <aside class="sidebar" id="sidebar" aria-label="Main navigation">
       <button class="icon-button sidebar-close" id="sidebar-close" aria-label="Close navigation" data-icon="close"></button>
-      <a class="wordmark" href="#overview">boos<span class="wordmark-dot">.</span><span class="wordmark-tag">WORKSPACE</span></a>
-      <button class="workspace" id="workspace-button"><span class="workspace-logo">B</span><span>Boos Studio<small>Business workspace</small></span><span data-icon="chevron"></span></button>
+      <a class="wordmark" href="#overview">dashboard<span class="wordmark-dot">.</span><span class="wordmark-tag">WORKSPACE</span></a>
+      <button class="workspace" id="workspace-button"><span class="workspace-logo">D</span><span>Portfolio Workspace<small>Business workspace</small></span><span data-icon="chevron"></span></button>
       <p class="nav-label">WORKSPACE</p>
       <nav>
         <button class="nav-item active" data-view="overview"><span data-icon="grid"></span>Overview<span class="nav-shortcut">Alt 1</span></button>
@@ -64,7 +64,7 @@
         </div>
         <section class="panel table-panel" id="transactions-panel"><div class="panel-heading"><div><h2 id="table-title">Recent transactions</h2><p id="table-description">The people behind the numbers.</p></div><label class="table-search"><span data-icon="search"></span><input id="table-search" type="search" placeholder="Search transactions" aria-label="Search transactions"></label></div><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable customer and transaction table"><table><thead id="table-head"></thead><tbody id="table-body"></tbody></table></div><div class="table-footer"><span id="table-count"></span><span class="pill">SAMPLE DATA</span></div></section>
         <section class="reports-grid" id="reports-panel" hidden></section>
-        <footer class="main-footer"><span>© 2026 Boos Studio <span class="footer-dot">·</span> Built for better decisions.</span><span>Crafted with HTML, CSS & JavaScript <span class="blue">↗</span></span></footer>
+        <footer class="main-footer"><span>Portfolio project <span class="footer-dot">·</span> Free to use and edit for your portfolio.</span><span>Crafted with HTML, CSS & JavaScript <span class="blue">↗</span></span></footer>
       </div>
     </main>
   </div>

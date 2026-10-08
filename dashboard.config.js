@@ -4,19 +4,19 @@
 // Loaded before app.js; no build tools, imports or server required.
 window.DASHBOARD_CONFIG = {
   brand: {
-    name: 'Boos',
-    wordmark: 'boos',
-    workspace: 'Boos Studio',
+    name: 'Dashboard',
+    wordmark: 'dashboard',
+    workspace: 'Portfolio Workspace',
     workspaceDescription: 'Business workspace',
     title: 'Business Analytics',
-    description: 'A customizable business analytics dashboard.',
-    footer: 'Built for better decisions.',
-    exportPrefix: 'boos',
+    description: 'A free, editable business analytics dashboard for portfolio projects.',
+    footer: 'Free to use and edit for your portfolio.',
+    exportPrefix: 'dashboard',
   },
-  profile: { name: 'Alex Johnson', firstName: 'Alex', initials: 'AJ', email: 'alex@boos.studio', role: 'Workspace owner' },
+  profile: { name: 'Alex Johnson', firstName: 'Alex', initials: 'AJ', email: 'alex@example.com', role: 'Workspace owner' },
   format: { locale: 'en-US', currency: 'USD', currentYear: 2026, previousYear: 2025 },
   // Give each project its own storage key so preferences don't leak between demos.
-  storageKey: 'boos-accent-v2',
+  storageKey: 'portfolio-dashboard-accent',
   theme: {
     accent: '#6684ad',
     palettes: [

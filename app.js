@@ -186,7 +186,7 @@ function initializeBrand(){
   $('.workspace-logo').textContent=brand.name[0].toUpperCase();
   $('#workspace-button').children[1].firstChild.textContent=brand.workspace;$('#workspace-button small').textContent=brand.workspaceDescription;
   document.querySelectorAll('.avatar').forEach(el=>el.textContent=config.profile.initials);$('#profile-button').setAttribute('aria-label',config.profile.name+' profile');
-  $('.main-footer>span:first-child').innerHTML=`© ${config.format.currentYear} ${escapeHTML(brand.workspace)} <span class="footer-dot">·</span> ${escapeHTML(brand.footer)}`;
+  $('.main-footer>span:first-child').innerHTML=`${escapeHTML(brand.workspace)} <span class="footer-dot">·</span> ${escapeHTML(brand.footer)}`;
   $('.geography-panel .panel-foot').firstChild.textContent=`Across ${config.geography.countries} countries`;
   $('.heatmap-footer>span').textContent='All times in '+config.activity.timezone;
   $('.legend-previous').parentElement.lastChild.textContent=config.format.previousYear;$('.legend>span:last-child').lastChild.textContent=config.format.currentYear;
