@@ -93,6 +93,6 @@ Po podłączeniu własnych danych możesz ustawić `demo: false`, żeby ukryć o
 
 ## 5. Wykorzystanie i publikacja
 
-Projekt jest darmowy do wykorzystania w osobistym portfolio. Możesz go kopiować, edytować, dostosowywać i udostępniać jako część swojego portfolio, bez opłaty i bez obowiązkowego podpisu w interfejsie. Ta zgoda dotyczy wyłącznie użycia w portfolio; jej treść znajduje się w `LICENSE`.
+Kod dashboardu jest darmowy do używania, kopiowania, edycji, dostosowywania i rozpowszechniania w dowolnym celu. Nie ma ograniczenia do portfolio, opłaty ani obowiązku podpisu. Nie ma osobnego pliku licencji; informacja „Free to use, modify and redistribute” znajduje się w README. Obrazki flag zachowują warunki swojego źródła, wskazanego w README.
 
 Do działającej strony potrzebujesz `index.html`, `styles.css`, `dashboard.config.js` i `app.js`. Folder `.tools` służy do lokalnego podglądu i testowania; nie jest wymagany do działania dashboardu. Instrukcja publikacji na GitHub Pages znajduje się w `README.md`.

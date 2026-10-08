@@ -10,8 +10,8 @@ window.DASHBOARD_CONFIG = {
     workspaceDescription: 'Business workspace',
     title: 'Business Analytics',
     description:
-      'A free, editable business analytics dashboard for portfolio projects.',
-    footer: 'Free to use and edit for your portfolio.',
+      'A free, editable business analytics dashboard for your projects.',
+    footer: 'Free to use, modify and redistribute.',
     exportPrefix: 'dashboard',
   },
   profile: {

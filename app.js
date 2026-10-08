@@ -762,7 +762,7 @@ function initializeBrand() {
   $('.demo-strip').childNodes.forEach((node) => {
     if (node.nodeType === 3 && node.textContent.trim())
       node.textContent = config.demo
-        ? ' Sample data for portfolio use '
+        ? ' Sample business data '
         : ' ' + brand.workspace + ' ';
   });
   $('.table-footer .pill').hidden = !config.demo;

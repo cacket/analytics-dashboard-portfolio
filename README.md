@@ -1,6 +1,6 @@
 # Business Analytics Dashboard — Portfolio Project
 
-A free, editable front-end **portfolio project** showcasing responsive UI development, accessible interactions, data visualization and reusable application configuration. Made for personal portfolios, with sample data throughout.
+A free, editable front-end **portfolio project** showcasing responsive UI development, accessible interactions, data visualization and reusable application configuration. Originally made for a personal portfolio; free to reuse and redistribute in your own projects. Sample data is included throughout.
 
 A reusable business analytics dashboard with a black canvas, muted slate-blue accents and white typography. Built entirely with **HTML, CSS and vanilla JavaScript**. No framework, build step, remote fonts or JavaScript libraries. Country flags load from FlagCDN with bundled fallback images.
 
@@ -12,7 +12,7 @@ Start with **`dashboard.config.js`**. Set your brand, workspace, profile, curren
 
 For a step-by-step guide in Polish, see [CUSTOMIZE.md](CUSTOMIZE.md).
 
-**Free for portfolio use.** You may copy, edit, customize and share this project as part of your personal portfolio. Replace the text, colors, layout and demo data to make it your own. No payment or visible attribution is required. This permission is limited to portfolio use; see `LICENSE`.
+**Free to use, modify and redistribute.** You may use, copy, edit, customize and redistribute the dashboard code for any purpose. Replace the text, colors, layout and demo data to make it your own. No payment or attribution is required.
 
 ## Run locally
 
@@ -55,7 +55,7 @@ assets/flags/       Local country flags used if the CDN is unavailable
 
 The default configuration is a portfolio demonstration. Notifications, profile information and business records are sample content; there is no authentication or backend. Changing `demo` hides the sample-data badges but does not connect a backend: provide your own records before using that setting.
 
-Country flag images are provided by [Flagpedia.net](https://flagpedia.net). The bundled images retain their source terms; the project's portfolio-use permission applies to the dashboard code.
+Country flag images are provided by [Flagpedia.net](https://flagpedia.net). The bundled images retain their source terms; the free-use permission above applies to the dashboard code.
 
 ## Browser checks
 
@@ -71,6 +71,6 @@ npx prettier --write app.js dashboard.config.js styles.css index.html .tools/*.c
 
 Prettier is only a development tool; running the dashboard does not require it. Browser checks also verify flag rendering, country code mapping, accurate share bars and local fallbacks when the CDN is unavailable.
 
-## Free portfolio use
+## Usage
 
-Free to use and edit for personal portfolio projects. See `LICENSE` for the portfolio-use permission.
+Free to use, modify and redistribute. There is no separate license file or restriction to portfolio use. The dashboard is provided as is, without warranty.
