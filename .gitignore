@@ -1,0 +1,6 @@
+.verification/
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.tools/publish.ps1
