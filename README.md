@@ -2,7 +2,7 @@
 
 A free, editable front-end **portfolio project** showcasing responsive UI development, accessible interactions, data visualization and reusable application configuration. Made for personal portfolios, with sample data throughout.
 
-A reusable business analytics dashboard with a black canvas, muted slate-blue accents and white typography. Built entirely with **HTML, CSS and vanilla JavaScript**. No framework, build step, remote fonts or runtime dependencies.
+A reusable business analytics dashboard with a black canvas, muted slate-blue accents and white typography. Built entirely with **HTML, CSS and vanilla JavaScript**. No framework, build step, remote fonts or JavaScript libraries. Country flags load from FlagCDN with bundled fallback images.
 
 ![Business analytics dashboard preview](assets/preview.png)
 
@@ -35,6 +35,7 @@ Visit `http://127.0.0.1:4180`.
 - Central project configuration, currency formatting and optional dashboard sections
 - Responsive navigation, native accessible dialogs and reduced-motion support
 - Local sample data, explicitly identified as a demo
+- Country flags from [FlagCDN / Flagpedia](https://flagpedia.net/download/api), with offline fallbacks and configurable ISO country codes
 
 ## GitHub Pages
 
@@ -47,15 +48,28 @@ index.html          Semantic dashboard layout
 dashboard.config.js Brand, theme, text, features and business data
 styles.css          Theme, charts and responsive layouts
 app.js              Sample data and all dashboard interactions
+assets/flags/       Local country flags used if the CDN is unavailable
 .tools/server.cjs   Optional local preview server
 .tools/check.cjs    Browser interaction and responsive layout checks
 ```
 
 The default configuration is a portfolio demonstration. Notifications, profile information and business records are sample content; there is no authentication or backend. Changing `demo` hides the sample-data badges but does not connect a backend: provide your own records before using that setting.
 
+Country flag images are provided by [Flagpedia.net](https://flagpedia.net). The bundled images retain their source terms; the project's portfolio-use permission applies to the dashboard code.
+
 ## Browser checks
 
 With the preview server running and Playwright installed in your test environment, run `node .tools/check.cjs`. Alternatively, set `DASHBOARD_PLAYWRIGHT_PATH` to an existing `@playwright/test` installation. The checks cover six viewport widths (320–1920px), navigation, keyboard access, filtering, CSV content, dialogs, saved colors and opening the page directly from disk. A separate configuration test verifies a custom brand, Polish currency formatting, actual chart arrays, optional sections and branded CSV exports. Screenshots are saved to the ignored `.verification` folder.
+
+## Code style
+
+Source files use two-space indentation, spaces around operators, semicolons and blank lines between functions. `.editorconfig` keeps editor settings consistent, and `.prettierrc.cjs` defines formatting for JavaScript, CSS and HTML. To format the project with Prettier:
+
+```sh
+npx prettier --write app.js dashboard.config.js styles.css index.html .tools/*.cjs
+```
+
+Prettier is only a development tool; running the dashboard does not require it. Browser checks also verify flag rendering, country code mapping, accurate share bars and local fallbacks when the CDN is unavailable.
 
 ## Free portfolio use
 

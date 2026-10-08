@@ -44,12 +44,20 @@ To zmienia format kwot, osi wykresu, tabel i walutę w CSV. Teksty interfejsu po
 
 - `periods`: okresy, przychody, liczba klientów i zamówień, oszczędności oraz daty.
 - `customers`: rekordy klientów i transakcji; opcjonalne `payment` zastępuje domyślną metodę płatności.
-- `geography`: liczba krajów, lista regionów i ich procentowe udziały.
+- `geography`: liczba krajów, lista regionów z kodami ISO i ich procentowe udziały.
 - `activity`: dni, godziny, strefa czasowa i macierze liczby zamówień.
 - `spending`: nazwy trzech kategorii, procenty postępu i zmiana oszczędności.
 - `reports`: tytuły, opisy i daty raportów. `type: 'monthly'` eksportuje podsumowanie, a `type: 'customers'` listę klientów.
 
 Teksty stron, metryk, paneli i bocznego komunikatu ustawisz przez `views` oraz `copy`. Pozostałe etykiety możesz zmieniać bezpośrednio w `index.html` i `app.js`.
+
+### Flagi krajów
+
+W regionach używaj `code`, np. `{ code: 'PL', name: 'Poland', share: 20 }`. Wielka Brytania ma kod `GB`. Flagi są pobierane jako obrazki z [FlagCDN](https://flagpedia.net/download/api), bez klucza API. `flagBaseUrl` zmienia źródło obrazków.
+
+Gdy CDN nie odpowie, aplikacja próbuje lokalnej kopii z `assets/flags/`. Kopie US, GB, DE, JP i PL są dołączone. Dla kolejnego kraju dodaj plik `kod.png` oraz małymi literami jego kod do `localFlags`. Jeśli flaga nie jest dostępna z żadnego źródła, pojawi się dyskretny kod kraju, bez uszkodzonego obrazka.
+
+`localFlagPath` określa katalog kopii. Flagi są materiałami z Flagpedia.net; informacja o źródle znajduje się w README. Szerokość paska odpowiada procentowi klientów, a wszystkie regiony mają ten sam kolor, żeby ułatwić porównanie.
 
 ### Rzeczywiste wartości na wykresie
 

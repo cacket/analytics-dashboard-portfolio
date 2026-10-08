@@ -1,74 +1,465 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090b10">
-  <meta name="description" content="A free, editable business analytics dashboard for portfolio projects, built with HTML, CSS and vanilla JavaScript.">
-  <title>Dashboard — Business Analytics</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%232f6bff'/%3E%3Cpath d='M12 27V13h10a4 4 0 0 1 0 8h-6m0 0h7a3 3 0 0 1 0 6H12' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="styles.css">
-  <script src="dashboard.config.js" defer></script>
-  <script src="app.js" defer></script>
-</head>
-<body>
-  <a class="skip-link" href="#main">Skip to content</a>
-  <div class="app-shell">
-    <aside class="rail" aria-label="Quick access">
-      <a class="brand-mark" href="#overview" aria-label="Dashboard home">d<span>↗</span></a>
-      <div class="rail-center">
-        <button class="icon-button active" data-view="overview" aria-label="Overview" data-icon="grid"></button>
-        <button class="icon-button" data-view="analytics" aria-label="Analytics" data-icon="chart"></button>
-        <button class="icon-button" data-view="customers" aria-label="Customers" data-icon="users"></button>
-        <button class="icon-button notification-dot" data-view="reports" aria-label="Reports" data-icon="file"></button>
-      </div>
-      <div class="rail-bottom"><button class="icon-button" data-settings aria-label="Customize dashboard" data-icon="sliders"></button><div class="avatar small">AJ</div></div>
-    </aside>
-    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
-      <button class="icon-button sidebar-close" id="sidebar-close" aria-label="Close navigation" data-icon="close"></button>
-      <a class="wordmark" href="#overview">dashboard<span class="wordmark-dot">.</span><span class="wordmark-tag">WORKSPACE</span></a>
-      <button class="workspace" id="workspace-button"><span class="workspace-logo">D</span><span>Portfolio Workspace<small>Business workspace</small></span><span data-icon="chevron"></span></button>
-      <p class="nav-label">WORKSPACE</p>
-      <nav>
-        <button class="nav-item active" data-view="overview"><span data-icon="grid"></span>Overview<span class="nav-shortcut">Alt 1</span></button>
-        <button class="nav-item" data-view="analytics"><span data-icon="chart"></span>Analytics</button>
-        <button class="nav-item" data-view="customers"><span data-icon="users"></span>Customers</button>
-        <button class="nav-item" data-view="reports"><span data-icon="file"></span>Reports<span class="count">2</span></button>
-      </nav>
-      <p class="nav-label tools-label">PREFERENCES</p>
-      <button class="nav-item" data-settings><span data-icon="sliders"></span>Settings</button>
-      <button class="nav-item" id="help-button"><span data-icon="help"></span>Help & shortcuts<span class="external">↗</span></button>
-      <div class="sidebar-promo"><div class="promo-spark">✦</div><h3>A little clarity.<br>A lot of growth.</h3><p>Your next big decision starts with the right insights.</p><button id="insights-button">Explore your reports <span>↗</span></button><div class="promo-orbit"></div></div>
-      <div class="sidebar-footer"><span class="status-dot"></span> All systems operational<span data-icon="chevron"></span></div>
-    </aside>
-    <div class="mobile-backdrop" id="mobile-backdrop" hidden></div>
-    <main id="main">
-      <header class="topbar">
-        <div class="breadcrumb"><button class="icon-button mobile-toggle" id="mobile-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar" data-icon="menu"></button><span>Workspace</span><span class="breadcrumb-slash">/</span><strong id="breadcrumb-view">Overview</strong></div>
-        <div class="header-actions"><button class="search-trigger" id="search-trigger"><span data-icon="search"></span><span>Search anything...</span><kbd>Ctrl K</kbd></button><span class="topbar-divider"></span><button class="icon-button" id="notification-button" aria-label="Notifications" aria-expanded="false" data-icon="bell"><span class="notification-badge"></span></button><button class="avatar" id="profile-button" aria-label="Alex Johnson profile">AJ</button></div>
-        <div class="notification-panel" id="notification-panel" hidden><div class="popover-title">You're all caught up <span class="status-dot"></span></div><p>Your September report is ready.</p><button id="notification-report">View report <span>↗</span></button><small>Demo workspace · sample notifications</small></div>
-      </header>
-      <div class="content">
-        <section class="page-heading"><div><div class="eyebrow"><span class="status-dot"></span> YOUR BUSINESS, AT A GLANCE</div><h1 id="page-title">Overview<span class="heading-dot">.</span></h1><p id="page-description">Welcome back, Alex. Let’s make today a good one.</p></div><div class="page-controls"><label class="period-control"><span data-icon="calendar"></span><select id="period" aria-label="Reporting period"><option value="30">Last 30 days</option><option value="90">Last 90 days</option><option value="365">This year</option></select></label><button class="button primary" id="export-button"><span data-icon="download"></span>Export report</button></div></section>
-        <div class="demo-strip"><span>DEMO WORKSPACE</span> Sample data. Real possibilities.<span class="demo-date" id="date-label">Sep 1 – Sep 30, 2026</span></div>
-        <section class="metrics" aria-label="Key business metrics">
-          <article class="metric-card"><div class="metric-top"><span>Total revenue</span><span class="metric-icon" data-icon="wallet"></span></div><div class="metric-value" id="revenue-value">$380,240<span>.00</span></div><div class="metric-bottom"><span class="change" id="revenue-change">↗ 24.8%</span><span>vs. previous period</span></div><svg class="sparkline" viewBox="0 0 150 40" aria-hidden="true"><path d="M0 33L12 30L24 34L36 23L48 27L60 18L72 22L84 10L96 15L108 7L120 12L135 4L150 0"/></svg></article>
-          <article class="metric-card"><div class="metric-top"><span>New customers</span><span class="metric-icon" data-icon="users"></span></div><div class="metric-value" id="customers-value">5,254</div><div class="metric-bottom"><span class="change" id="customers-change">↗ 18.6%</span><span>vs. previous period</span></div><svg class="sparkline" viewBox="0 0 150 40" aria-hidden="true"><path d="M0 34L15 28L30 31L45 19L60 21L75 12L90 18L105 10L120 12L135 3L150 5"/></svg></article>
-          <article class="metric-card"><div class="metric-top"><span>Total orders</span><span class="metric-icon" data-icon="bag"></span></div><div class="metric-value" id="orders-value">9,830</div><div class="metric-bottom"><span class="change" id="orders-change">↗ 32.4%</span><span>vs. previous period</span></div><svg class="sparkline" viewBox="0 0 150 40" aria-hidden="true"><path d="M0 35L15 37L30 24L45 29L60 18L75 23L90 12L105 14L120 5L135 10L150 0"/></svg></article>
-        </section>
-        <div class="dashboard-grid" id="overview-panels">
-          <section class="panel sales-panel" id="sales-panel"><div class="panel-heading"><div><h2><span class="title-icon" data-icon="chart"></span>Revenue overview</h2><p>A little perspective on your progress.</p></div><label class="compact-select"><select id="chart-mode" aria-label="Revenue comparison"><option value="compare">Year comparison</option><option value="current">Current year</option></select><span data-icon="chevron"></span></label></div><div class="chart-summary"><strong id="chart-total">$380,240.00</strong><span class="change">↗ 24.8%</span><div class="legend"><span><i class="legend-previous"></i>2025</span><span><i></i>2026</span></div></div><div class="bar-chart" id="bar-chart" aria-label="Monthly revenue chart"><div class="chart-y-axis"><span>$30k</span><span>$20k</span><span>$10k</span><span>$0</span></div><div class="chart-plot"><div class="chart-grid"><i></i><i></i><i></i><i></i></div><div class="chart-bars" id="chart-bars"></div></div></div><div class="chart-tooltip" id="chart-tooltip" role="status" hidden></div><div class="panel-foot"><span class="status-dot"></span>Revenue is up compared to last year.<span>Looking good <span class="blue">↗</span></span></div></section>
-          <section class="panel costs-panel"><div class="panel-heading"><div><h2><span class="title-icon" data-icon="trend"></span>Smarter spending</h2><p>Small changes. Bigger savings.</p></div><span class="pill">THIS MONTH</span></div><div class="rings-wrap"><svg class="cost-rings" viewBox="0 0 240 240" role="img" aria-label="Savings progress: operations 82%, marketing 68%, logistics 54%"><circle class="ring-track" cx="120" cy="120" r="100"/><circle class="ring-track" cx="120" cy="120" r="82"/><circle class="ring-track" cx="120" cy="120" r="64"/><circle class="ring ring-one" cx="120" cy="120" r="100" pathLength="100" stroke-dasharray="82 100"/><circle class="ring ring-two" cx="120" cy="120" r="82" pathLength="100" stroke-dasharray="68 100"/><circle class="ring ring-three" cx="120" cy="120" r="64" pathLength="100" stroke-dasharray="54 100"/></svg><div class="rings-center"><span>Total saved</span><strong id="savings-value">$23,123</strong><small>↗ 12.8% this month</small></div><span class="ring-spark">✦</span></div><div class="cost-legend"><div><i></i><span>Operations</span><strong>82%</strong></div><div><i></i><span>Marketing</span><strong>68%</strong></div><div><i></i><span>Logistics</span><strong>54%</strong></div></div></section>
-          <section class="panel geography-panel"><div class="panel-heading"><div><h2><span class="title-icon" data-icon="globe"></span>Where you’re growing</h2><p>Your customers, around the world.</p></div><button class="icon-button" id="geography-button" aria-label="View all customer regions" data-icon="arrow"></button></div><div class="country-list" id="country-list"></div><div class="panel-foot">Across 24 countries<span class="blue">And counting ↗</span></div></section>
-          <section class="panel heatmap-panel"><div class="panel-heading"><div><h2><span class="title-icon" data-icon="clock"></span>Every hour counts</h2><p>Find your busiest moments.</p></div><label class="compact-select"><select id="heatmap-period" aria-label="Order activity period"><option value="week">This week</option><option value="last">Last week</option></select><span data-icon="chevron"></span></label></div><div class="heatmap" id="heatmap" role="group" aria-label="Orders by day and hour"></div><div class="heatmap-footer"><span>All times in UTC</span><div>Less <i></i><i></i><i></i><i></i><i></i> More</div></div></section>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#090b10" />
+    <meta
+      name="description"
+      content="A free, editable business analytics dashboard for portfolio projects, built with HTML, CSS and vanilla JavaScript."
+    />
+    <title>Dashboard — Business Analytics</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%232f6bff'/%3E%3Cpath d='M12 27V13h10a4 4 0 0 1 0 8h-6m0 0h7a3 3 0 0 1 0 6H12' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="dashboard.config.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="app-shell">
+      <aside class="rail" aria-label="Quick access">
+        <a class="brand-mark" href="#overview" aria-label="Dashboard home"
+          >d<span>↗</span></a
+        >
+        <div class="rail-center">
+          <button
+            class="icon-button active"
+            data-view="overview"
+            aria-label="Overview"
+            data-icon="grid"
+          ></button>
+          <button
+            class="icon-button"
+            data-view="analytics"
+            aria-label="Analytics"
+            data-icon="chart"
+          ></button>
+          <button
+            class="icon-button"
+            data-view="customers"
+            aria-label="Customers"
+            data-icon="users"
+          ></button>
+          <button
+            class="icon-button notification-dot"
+            data-view="reports"
+            aria-label="Reports"
+            data-icon="file"
+          ></button>
         </div>
-        <section class="panel table-panel" id="transactions-panel"><div class="panel-heading"><div><h2 id="table-title">Recent transactions</h2><p id="table-description">The people behind the numbers.</p></div><label class="table-search"><span data-icon="search"></span><input id="table-search" type="search" placeholder="Search transactions" aria-label="Search transactions"></label></div><div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable customer and transaction table"><table><thead id="table-head"></thead><tbody id="table-body"></tbody></table></div><div class="table-footer"><span id="table-count"></span><span class="pill">SAMPLE DATA</span></div></section>
-        <section class="reports-grid" id="reports-panel" hidden></section>
-        <footer class="main-footer"><span>Portfolio project <span class="footer-dot">·</span> Free to use and edit for your portfolio.</span><span>Crafted with HTML, CSS & JavaScript <span class="blue">↗</span></span></footer>
+        <div class="rail-bottom">
+          <button
+            class="icon-button"
+            data-settings
+            aria-label="Customize dashboard"
+            data-icon="sliders"
+          ></button>
+          <div class="avatar small">AJ</div>
+        </div>
+      </aside>
+      <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+        <button
+          class="icon-button sidebar-close"
+          id="sidebar-close"
+          aria-label="Close navigation"
+          data-icon="close"
+        ></button>
+        <a class="wordmark" href="#overview"
+          >dashboard<span class="wordmark-dot">.</span
+          ><span class="wordmark-tag">WORKSPACE</span></a
+        >
+        <button class="workspace" id="workspace-button">
+          <span class="workspace-logo">D</span
+          ><span>Portfolio Workspace<small>Business workspace</small></span
+          ><span data-icon="chevron"></span>
+        </button>
+        <p class="nav-label">WORKSPACE</p>
+        <nav>
+          <button class="nav-item active" data-view="overview">
+            <span data-icon="grid"></span>Overview<span class="nav-shortcut"
+              >Alt 1</span
+            >
+          </button>
+          <button class="nav-item" data-view="analytics">
+            <span data-icon="chart"></span>Analytics
+          </button>
+          <button class="nav-item" data-view="customers">
+            <span data-icon="users"></span>Customers
+          </button>
+          <button class="nav-item" data-view="reports">
+            <span data-icon="file"></span>Reports<span class="count">2</span>
+          </button>
+        </nav>
+        <p class="nav-label tools-label">PREFERENCES</p>
+        <button class="nav-item" data-settings>
+          <span data-icon="sliders"></span>Settings
+        </button>
+        <button class="nav-item" id="help-button">
+          <span data-icon="help"></span>Help & shortcuts<span class="external"
+            >↗</span
+          >
+        </button>
+        <div class="sidebar-promo">
+          <h3>Monthly reports</h3>
+          <p>Revenue summaries and customer records, ready to export.</p>
+          <button id="insights-button">View reports <span>↗</span></button>
+        </div>
+        <div class="sidebar-footer">
+          <span data-icon="file"></span> Portfolio demo<span
+            >HTML · CSS · JS</span
+          >
+        </div>
+      </aside>
+      <div class="mobile-backdrop" id="mobile-backdrop" hidden></div>
+      <main id="main">
+        <header class="topbar">
+          <div class="breadcrumb">
+            <button
+              class="icon-button mobile-toggle"
+              id="mobile-toggle"
+              aria-label="Open navigation"
+              aria-expanded="false"
+              aria-controls="sidebar"
+              data-icon="menu"
+            ></button
+            ><span>Workspace</span><span class="breadcrumb-slash">/</span
+            ><strong id="breadcrumb-view">Overview</strong>
+          </div>
+          <div class="header-actions">
+            <button class="search-trigger" id="search-trigger">
+              <span data-icon="search"></span><span>Search anything...</span
+              ><kbd>Ctrl K</kbd></button
+            ><span class="topbar-divider"></span
+            ><button
+              class="icon-button"
+              id="notification-button"
+              aria-label="Notifications"
+              aria-expanded="false"
+              data-icon="bell"
+            >
+              <span class="notification-badge"></span></button
+            ><button
+              class="avatar"
+              id="profile-button"
+              aria-label="Alex Johnson profile"
+            >
+              AJ
+            </button>
+          </div>
+          <div class="notification-panel" id="notification-panel" hidden>
+            <div class="popover-title">
+              You're all caught up <span class="status-dot"></span>
+            </div>
+            <p>Your September report is ready.</p>
+            <button id="notification-report">View report <span>↗</span></button
+            ><small>Demo workspace · sample notifications</small>
+          </div>
+        </header>
+        <div class="content">
+          <section class="page-heading">
+            <div>
+              <div class="eyebrow">
+                <span class="status-dot"></span> YOUR BUSINESS, AT A GLANCE
+              </div>
+              <h1 id="page-title">
+                Overview<span class="heading-dot">.</span>
+              </h1>
+              <p id="page-description">
+                Welcome back, Alex. Let’s make today a good one.
+              </p>
+            </div>
+            <div class="page-controls">
+              <label class="period-control"
+                ><span data-icon="calendar"></span
+                ><select id="period" aria-label="Reporting period">
+                  <option value="30">Last 30 days</option>
+                  <option value="90">Last 90 days</option>
+                  <option value="365">This year</option>
+                </select></label
+              ><button class="button primary" id="export-button">
+                <span data-icon="download"></span>Export report
+              </button>
+            </div>
+          </section>
+          <div class="demo-strip">
+            <span>DEMO WORKSPACE</span> Sample data. Real possibilities.<span
+              class="demo-date"
+              id="date-label"
+              >Sep 1 – Sep 30, 2026</span
+            >
+          </div>
+          <section class="metrics" aria-label="Key business metrics">
+            <article class="metric-card">
+              <div class="metric-top">
+                <span>Total revenue</span
+                ><span class="metric-icon" data-icon="wallet"></span>
+              </div>
+              <div class="metric-value" id="revenue-value">
+                $380,240<span>.00</span>
+              </div>
+              <div class="metric-bottom">
+                <span class="change" id="revenue-change">↗ 24.8%</span
+                ><span>vs. previous period</span>
+              </div>
+              <svg class="sparkline" viewBox="0 0 150 40" aria-hidden="true">
+                <path
+                  d="M0 33L12 30L24 34L36 23L48 27L60 18L72 22L84 10L96 15L108 7L120 12L135 4L150 0"
+                />
+              </svg>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top">
+                <span>New customers</span
+                ><span class="metric-icon" data-icon="users"></span>
+              </div>
+              <div class="metric-value" id="customers-value">5,254</div>
+              <div class="metric-bottom">
+                <span class="change" id="customers-change">↗ 18.6%</span
+                ><span>vs. previous period</span>
+              </div>
+              <svg class="sparkline" viewBox="0 0 150 40" aria-hidden="true">
+                <path
+                  d="M0 34L15 28L30 31L45 19L60 21L75 12L90 18L105 10L120 12L135 3L150 5"
+                />
+              </svg>
+            </article>
+            <article class="metric-card">
+              <div class="metric-top">
+                <span>Total orders</span
+                ><span class="metric-icon" data-icon="bag"></span>
+              </div>
+              <div class="metric-value" id="orders-value">9,830</div>
+              <div class="metric-bottom">
+                <span class="change" id="orders-change">↗ 32.4%</span
+                ><span>vs. previous period</span>
+              </div>
+              <svg class="sparkline" viewBox="0 0 150 40" aria-hidden="true">
+                <path
+                  d="M0 35L15 37L30 24L45 29L60 18L75 23L90 12L105 14L120 5L135 10L150 0"
+                />
+              </svg>
+            </article>
+          </section>
+          <div class="dashboard-grid" id="overview-panels">
+            <section class="panel sales-panel" id="sales-panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>
+                    <span class="title-icon" data-icon="chart"></span>Revenue
+                    overview
+                  </h2>
+                  <p>A little perspective on your progress.</p>
+                </div>
+                <label class="compact-select"
+                  ><select id="chart-mode" aria-label="Revenue comparison">
+                    <option value="compare">Year comparison</option>
+                    <option value="current">Current year</option></select
+                  ><span data-icon="chevron"></span
+                ></label>
+              </div>
+              <div class="chart-summary">
+                <strong id="chart-total">$380,240.00</strong
+                ><span class="change">↗ 24.8%</span>
+                <div class="legend">
+                  <span><i class="legend-previous"></i>2025</span
+                  ><span><i></i>2026</span>
+                </div>
+              </div>
+              <div
+                class="bar-chart"
+                id="bar-chart"
+                aria-label="Monthly revenue chart"
+              >
+                <div class="chart-y-axis">
+                  <span>$30k</span><span>$20k</span><span>$10k</span
+                  ><span>$0</span>
+                </div>
+                <div class="chart-plot">
+                  <div class="chart-grid"><i></i><i></i><i></i><i></i></div>
+                  <div class="chart-bars" id="chart-bars"></div>
+                </div>
+              </div>
+              <div
+                class="chart-tooltip"
+                id="chart-tooltip"
+                role="status"
+                hidden
+              ></div>
+              <div class="panel-foot">
+                <span class="status-dot"></span>Revenue is up compared to last
+                year.<span>Year comparison <span class="blue">↗</span></span>
+              </div>
+            </section>
+            <section class="panel costs-panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>
+                    <span class="title-icon" data-icon="trend"></span>Cost
+                    savings
+                  </h2>
+                  <p>Savings by expense category.</p>
+                </div>
+                <span class="pill">THIS MONTH</span>
+              </div>
+              <div class="rings-wrap">
+                <svg
+                  class="cost-rings"
+                  viewBox="0 0 240 240"
+                  role="img"
+                  aria-label="Savings progress: operations 82%, marketing 68%, logistics 54%"
+                >
+                  <circle class="ring-track" cx="120" cy="120" r="100" />
+                  <circle class="ring-track" cx="120" cy="120" r="82" />
+                  <circle class="ring-track" cx="120" cy="120" r="64" />
+                  <circle
+                    class="ring ring-one"
+                    cx="120"
+                    cy="120"
+                    r="100"
+                    pathLength="100"
+                    stroke-dasharray="82 100"
+                  />
+                  <circle
+                    class="ring ring-two"
+                    cx="120"
+                    cy="120"
+                    r="82"
+                    pathLength="100"
+                    stroke-dasharray="68 100"
+                  />
+                  <circle
+                    class="ring ring-three"
+                    cx="120"
+                    cy="120"
+                    r="64"
+                    pathLength="100"
+                    stroke-dasharray="54 100"
+                  />
+                </svg>
+                <div class="rings-center">
+                  <span>Total saved</span
+                  ><strong id="savings-value">$23,123</strong
+                  ><small>↗ 12.8% this month</small>
+                </div>
+                <span class="ring-spark">✦</span>
+              </div>
+              <div class="cost-legend">
+                <div><i></i><span>Operations</span><strong>82%</strong></div>
+                <div><i></i><span>Marketing</span><strong>68%</strong></div>
+                <div><i></i><span>Logistics</span><strong>54%</strong></div>
+              </div>
+            </section>
+            <section class="panel geography-panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>
+                    <span class="title-icon" data-icon="globe"></span>Where
+                    you’re growing
+                  </h2>
+                  <p>Customer distribution for the selected period.</p>
+                </div>
+                <button
+                  class="icon-button"
+                  id="geography-button"
+                  aria-label="View all customer regions"
+                  data-icon="arrow"
+                ></button>
+              </div>
+              <div class="country-list" id="country-list"></div>
+              <div class="panel-foot">
+                Across 24 countries<span class="blue">Top regions ↗</span>
+              </div>
+            </section>
+            <section class="panel heatmap-panel">
+              <div class="panel-heading">
+                <div>
+                  <h2>
+                    <span class="title-icon" data-icon="clock"></span>Order
+                    activity
+                  </h2>
+                  <p>Order volume by day and hour.</p>
+                </div>
+                <label class="compact-select"
+                  ><select
+                    id="heatmap-period"
+                    aria-label="Order activity period"
+                  >
+                    <option value="week">This week</option>
+                    <option value="last">Last week</option></select
+                  ><span data-icon="chevron"></span
+                ></label>
+              </div>
+              <div
+                class="heatmap"
+                id="heatmap"
+                role="group"
+                aria-label="Orders by day and hour"
+              ></div>
+              <div class="heatmap-footer">
+                <span>All times in UTC</span>
+                <div>Less <i></i><i></i><i></i><i></i><i></i> More</div>
+              </div>
+            </section>
+          </div>
+          <section class="panel table-panel" id="transactions-panel">
+            <div class="panel-heading">
+              <div>
+                <h2 id="table-title">Recent transactions</h2>
+                <p id="table-description">Latest payments and their status.</p>
+              </div>
+              <label class="table-search"
+                ><span data-icon="search"></span
+                ><input
+                  id="table-search"
+                  type="search"
+                  placeholder="Search transactions"
+                  aria-label="Search transactions"
+              /></label>
+            </div>
+            <div
+              class="table-scroll"
+              tabindex="0"
+              role="region"
+              aria-label="Scrollable customer and transaction table"
+            >
+              <table>
+                <thead id="table-head"></thead>
+                <tbody id="table-body"></tbody>
+              </table>
+            </div>
+            <div class="table-footer">
+              <span id="table-count"></span
+              ><span class="pill">SAMPLE DATA</span>
+            </div>
+          </section>
+          <section class="reports-grid" id="reports-panel" hidden></section>
+          <footer class="main-footer">
+            <span
+              >Portfolio project <span class="footer-dot">·</span> Free to use
+              and edit for your portfolio.</span
+            ><span
+              >Crafted with HTML, CSS & JavaScript
+              <span class="blue">↗</span></span
+            >
+          </footer>
+        </div>
+      </main>
+    </div>
+    <dialog id="app-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-top">
+        <h2 id="dialog-title"></h2>
+        <button
+          class="icon-button"
+          id="dialog-close"
+          aria-label="Close dialog"
+          data-icon="close"
+        ></button>
       </div>
-    </main>
-  </div>
-  <dialog id="app-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><h2 id="dialog-title"></h2><button class="icon-button" id="dialog-close" aria-label="Close dialog" data-icon="close"></button></div><div id="dialog-body"></div></dialog>
-  <div class="toast" id="toast" role="status" hidden></div>
-</body>
+      <div id="dialog-body"></div>
+    </dialog>
+    <div class="toast" id="toast" role="status" hidden></div>
+  </body>
 </html>

@@ -1,4 +1,6 @@
-const { chromium } = require(process.env.DASHBOARD_PLAYWRIGHT_PATH || '@playwright/test');
+const { chromium } = require(
+  process.env.DASHBOARD_PLAYWRIGHT_PATH || '@playwright/test',
+);
 const assert = require('node:assert/strict');
 const fs = require('node:fs/promises');
 const path = require('node:path');
@@ -7,48 +9,128 @@ const path = require('node:path');
   await fs.mkdir(artifacts, { recursive: true });
   const browser = await chromium.launch({ headless: true });
   const errors = [];
+  // Deterministic CDN responses from the actual downloaded FlagCDN assets.
+  const mockFlags = async (context) =>
+    context.route('https://flagcdn.com/**', async (route) => {
+      const code = new URL(route.request().url()).pathname.split('/').pop();
+      await route.fulfill({
+        contentType: 'image/png',
+        body: await fs.readFile(
+          path.resolve(__dirname, '../assets/flags', code),
+        ),
+      });
+    });
   try {
     for (const width of [1920, 1440, 1024, 768, 390, 320]) {
-      const context = await browser.newContext({ viewport: { width, height: 1080 }, reducedMotion: 'reduce' });
+      const context = await browser.newContext({
+        viewport: { width, height: 1080 },
+        reducedMotion: 'reduce',
+      });
+      await mockFlags(context);
       const page = await context.newPage();
-      page.on('pageerror', error => errors.push(error.message));
-      page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
-      page.on('response', response => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
+      page.on('pageerror', (error) => errors.push(error.message));
+      page.on('console', (message) => {
+        if (message.type() === 'error') errors.push(message.text());
+      });
+      page.on('response', (response) => {
+        if (response.status() >= 400)
+          errors.push(`${response.status()} ${response.url()}`);
+      });
       await page.goto('http://127.0.0.1:4180/', { waitUntil: 'networkidle' });
       assert.equal(await page.title(), 'Dashboard — Business Analytics');
       assert.equal(await page.locator('.month-group').count(), 10);
       assert.equal(await page.locator('.heat-cell').count(), 35);
       assert.equal(await page.locator('#table-body tr').count(), 5);
-      const dimensions = await page.evaluate(() => ({ content: document.documentElement.scrollWidth, viewport: innerWidth }));
-      assert.ok(dimensions.content <= dimensions.viewport, `Overflow at ${width}: ${JSON.stringify(dimensions)}`);
-      if (width > 1050) assert.equal(await page.locator('.wordmark').evaluate(el => el.scrollWidth <= el.clientWidth), true, 'Wordmark must fit the sidebar');
-      await page.screenshot({ path: path.join(artifacts, `dashboard-${width}.png`), fullPage: true });
+      await page.waitForFunction(() =>
+        [...document.querySelectorAll('#country-list img')].every(
+          (img) => img.complete && img.naturalWidth > 0,
+        ),
+      );
+      assert.equal(await page.locator('#country-list .flag-loaded').count(), 4);
+      assert.equal(
+        await page.locator('[data-country-code="gb"]').getAttribute('src'),
+        'https://flagcdn.com/w80/gb.png',
+      );
+      assert.equal(
+        await page
+          .locator('.country-fill')
+          .first()
+          .evaluate((el) => el.style.width),
+        '36%',
+      );
+      const dimensions = await page.evaluate(() => ({
+        content: document.documentElement.scrollWidth,
+        viewport: innerWidth,
+      }));
+      assert.ok(
+        dimensions.content <= dimensions.viewport,
+        `Overflow at ${width}: ${JSON.stringify(dimensions)}`,
+      );
+      if (width > 1050)
+        assert.equal(
+          await page
+            .locator('.wordmark')
+            .evaluate((el) => el.scrollWidth <= el.clientWidth),
+          true,
+          'Wordmark must fit the sidebar',
+        );
+      await page.screenshot({
+        path: path.join(artifacts, `dashboard-${width}.png`),
+        fullPage: true,
+      });
       await page.selectOption('#period', '90');
-      assert.match(await page.locator('#revenue-value').textContent(), /1,026,648/);
-      assert.equal(await page.evaluate(() => chartData().current.reduce((a,b) => a+b,0)), 1026648);
+      assert.equal(
+        await page.locator('.country-top>small').first().textContent(),
+        '5,112',
+      );
+      assert.match(
+        await page.locator('#revenue-value').textContent(),
+        /1,026,648/,
+      );
+      assert.equal(
+        await page.evaluate(() =>
+          chartData().current.reduce((a, b) => a + b, 0),
+        ),
+        1026648,
+      );
       await page.selectOption('#chart-mode', 'current');
       assert.equal(await page.locator('.bar:not(.current)').count(), 0);
       await page.locator('.month-group').first().focus();
       assert.equal(await page.locator('#chart-tooltip').isVisible(), true);
-      const previousHeat = await page.locator('.heat-cell').first().textContent();
+      const previousHeat = await page
+        .locator('.heat-cell')
+        .first()
+        .textContent();
       await page.selectOption('#heatmap-period', 'last');
-      assert.notEqual(await page.locator('.heat-cell').first().textContent(), previousHeat);
+      assert.notEqual(
+        await page.locator('.heat-cell').first().textContent(),
+        previousHeat,
+      );
       await page.locator('#table-search').fill('olivia');
       assert.equal(await page.locator('#table-body tr').count(), 1);
       await page.locator('#table-search').fill('does not exist');
-      assert.match(await page.locator('#table-body').textContent(), /No results/);
+      assert.match(
+        await page.locator('#table-body').textContent(),
+        /No results/,
+      );
       await page.locator('#table-search').fill('');
       const downloadPromise = page.waitForEvent('download');
       await page.locator('#export-button').click();
       const download = await downloadPromise;
-      assert.equal(download.suggestedFilename(), 'dashboard-monthly-90-days.csv');
+      assert.equal(
+        download.suggestedFilename(),
+        'dashboard-monthly-90-days.csv',
+      );
       const csv = await fs.readFile(await download.path(), 'utf8');
       assert.match(csv, /1026648/);
       await page.keyboard.press('Control+k');
       assert.equal(await page.locator('#app-dialog').isVisible(), true);
       await page.locator('#global-search').fill('Olivia');
       await page.locator('[data-search-view="customers"]').click();
-      assert.equal(await page.locator('#table-title').textContent(), 'Your customers');
+      assert.equal(
+        await page.locator('#table-title').textContent(),
+        'Your customers',
+      );
       assert.equal(await page.locator('#table-body tr').count(), 1);
       assert.equal(await page.locator('#overview-panels').isVisible(), false);
       await page.keyboard.press('Alt+4');
@@ -57,69 +139,151 @@ const path = require('node:path');
       const customerDownloadPromise = page.waitForEvent('download');
       await page.locator('[data-export="customers"]').click();
       const customerDownload = await customerDownloadPromise;
-      assert.match(await fs.readFile(await customerDownload.path(), 'utf8'), /Olivia Rhye/);
+      assert.match(
+        await fs.readFile(await customerDownload.path(), 'utf8'),
+        /Olivia Rhye/,
+      );
       await page.keyboard.press('Alt+1');
       if (width <= 1050) {
         await page.locator('#mobile-toggle').click();
-        assert.equal(await page.locator('#mobile-toggle').getAttribute('aria-expanded'), 'true');
+        assert.equal(
+          await page.locator('#mobile-toggle').getAttribute('aria-expanded'),
+          'true',
+        );
         await page.locator('#sidebar [data-settings]').click();
       } else await page.locator('#sidebar [data-settings]').click();
       await page.locator('[data-color="#70939f"]').click();
-      assert.equal(await page.evaluate(() => localStorage.getItem('portfolio-dashboard-accent')), '#70939f');
+      assert.equal(
+        await page.evaluate(() =>
+          localStorage.getItem('portfolio-dashboard-accent'),
+        ),
+        '#70939f',
+      );
       await page.keyboard.press('Escape');
-      await page.waitForFunction(() => !document.querySelector('#app-dialog').open && !document.body.classList.contains('modal-open'));
+      await page.waitForFunction(
+        () =>
+          !document.querySelector('#app-dialog').open &&
+          !document.body.classList.contains('modal-open'),
+      );
       assert.equal(await page.locator('#app-dialog').isVisible(), false);
-      assert.equal(await page.evaluate(() => document.body.classList.contains('modal-open')), false);
+      assert.equal(
+        await page.evaluate(() =>
+          document.body.classList.contains('modal-open'),
+        ),
+        false,
+      );
       if (width <= 1050) {
         await page.keyboard.press('Escape');
         await page.locator('#mobile-toggle').click();
         await page.locator('#sidebar [data-view="analytics"]').click();
         assert.equal(await page.locator('#mobile-backdrop').isVisible(), false);
-        assert.equal(await page.locator('#transactions-panel').isVisible(), false);
+        assert.equal(
+          await page.locator('#transactions-panel').isVisible(),
+          false,
+        );
       }
       await page.reload();
-      assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()), '#70939f');
-      console.log(`PASS ${width}px: layout, periods, chart, heatmap, searches, navigation, CSV, palette persistence${width <= 1050 ? ', mobile navigation' : ''}`);
+      assert.equal(
+        await page.evaluate(() =>
+          getComputedStyle(document.documentElement)
+            .getPropertyValue('--accent')
+            .trim(),
+        ),
+        '#70939f',
+      );
+      console.log(
+        `PASS ${width}px: layout, periods, chart, heatmap, searches, navigation, CSV, palette persistence${width <= 1050 ? ', mobile navigation' : ''}`,
+      );
       await context.close();
     }
     const context = await browser.newContext();
+    await mockFlags(context);
     const page = await context.newPage();
-    page.on('pageerror', error => errors.push(error.message));
+    page.on('pageerror', (error) => errors.push(error.message));
     await page.goto('http://127.0.0.1:4180/');
     await page.locator('#notification-button').click();
     assert.equal(await page.locator('#notification-panel').isVisible(), true);
     await page.locator('#notification-report').click();
     assert.equal(await page.locator('#reports-panel').isVisible(), true);
-    assert.equal(await page.locator('#notification-button').getAttribute('aria-expanded'), 'false');
+    assert.equal(
+      await page.locator('#notification-button').getAttribute('aria-expanded'),
+      'false',
+    );
     await page.keyboard.press('Alt+1');
-    for (const [button, title] of [['#profile-button', 'Hello, Alex.'], ['#workspace-button', 'Portfolio Workspace'], ['#help-button', 'A few helpful shortcuts'], ['#geography-button', 'Your customer regions']]) {
+    for (const [button, title] of [
+      ['#profile-button', 'Hello, Alex.'],
+      ['#workspace-button', 'Portfolio Workspace'],
+      ['#help-button', 'A few helpful shortcuts'],
+      ['#geography-button', 'Your customer regions'],
+    ]) {
       await page.locator(button).click();
       assert.equal(await page.locator('#dialog-title').textContent(), title);
       await page.keyboard.press('Escape');
-      await page.waitForFunction(() => !document.querySelector('#app-dialog').open && !document.body.classList.contains('modal-open'));
-      assert.equal(await page.locator(button).evaluate(el => el === document.activeElement), true);
+      await page.waitForFunction(
+        () =>
+          !document.querySelector('#app-dialog').open &&
+          !document.body.classList.contains('modal-open'),
+      );
+      assert.equal(
+        await page
+          .locator(button)
+          .evaluate((el) => el === document.activeElement),
+        true,
+      );
     }
     await page.setViewportSize({ width: 390, height: 844 });
     await page.locator('#mobile-toggle').click();
     await page.locator('#sidebar-close').focus();
     await page.keyboard.press('Shift+Tab');
-    assert.equal(await page.locator('#insights-button').evaluate(el => el === document.activeElement), true);
+    assert.equal(
+      await page
+        .locator('#insights-button')
+        .evaluate((el) => el === document.activeElement),
+      true,
+    );
     await page.keyboard.press('Tab');
-    assert.equal(await page.locator('#sidebar-close').evaluate(el => el === document.activeElement), true);
+    assert.equal(
+      await page
+        .locator('#sidebar-close')
+        .evaluate((el) => el === document.activeElement),
+      true,
+    );
     await page.locator('#sidebar-close').click();
-    assert.equal(await page.locator('#mobile-toggle').evaluate(el => el === document.activeElement), true);
-    console.log('PASS notifications, profile, help, region details, dialog focus restoration and mobile keyboard navigation');
-    await page.goto('file:///' + path.resolve(__dirname, '../index.html').replace(/\\/g, '/'), { waitUntil: 'load' });
+    assert.equal(
+      await page
+        .locator('#mobile-toggle')
+        .evaluate((el) => el === document.activeElement),
+      true,
+    );
+    console.log(
+      'PASS notifications, profile, help, region details, dialog focus restoration and mobile keyboard navigation',
+    );
+    await page.goto(
+      'file:///' + path.resolve(__dirname, '../index.html').replace(/\\/g, '/'),
+      { waitUntil: 'load' },
+    );
     assert.equal(await page.locator('.month-group').count(), 10);
     await page.keyboard.press('Alt+3');
-    assert.equal(await page.locator('#table-title').textContent(), 'Your customers');
+    assert.equal(
+      await page.locator('#table-title').textContent(),
+      'Your customers',
+    );
     console.log('PASS opening index.html directly without a server');
     await context.close();
     const customContext = await browser.newContext();
+    await mockFlags(customContext);
     const customPage = await customContext.newPage();
-    customPage.on('pageerror', error => errors.push(error.message));
-    const source = await fs.readFile(path.resolve(__dirname, '../dashboard.config.js'), 'utf8');
-    await customPage.route('**/dashboard.config.js', route => route.fulfill({ contentType: 'text/javascript', body: source + `
+    customPage.on('pageerror', (error) => errors.push(error.message));
+    const source = await fs.readFile(
+      path.resolve(__dirname, '../dashboard.config.js'),
+      'utf8',
+    );
+    await customPage.route('**/dashboard.config.js', (route) =>
+      route.fulfill({
+        contentType: 'text/javascript',
+        body:
+          source +
+          `
       const custom = window.DASHBOARD_CONFIG;
       Object.assign(custom.brand, {name:'North & Co',wordmark:'north',workspace:'North Studio',exportPrefix:'north'});
       Object.assign(custom.profile, {name:'Ada Kowalska',firstName:'Ada',initials:'AK'});
@@ -129,30 +293,128 @@ const path = require('node:path');
       Object.assign(custom.periods['30'],{chartLabels:['A','B','C'],chartCurrent:[100,250,650],chartPrevious:[0,0,0]});
       custom.customers=[{name:'Ada <Lab>',email:'ada@north.test',initials:'AK',company:'North',region:'Poland',date:'Jan 2027',amount:99.5,status:'Completed',plan:'Team'}];
       custom.geography={countries:1,regions:[{flag:'PL',name:'Poland',share:100}]};
-    ` }));
+    `,
+      }),
+    );
     await customPage.goto('http://127.0.0.1:4180/');
     assert.equal(await customPage.title(), 'North & Co — Business Analytics');
-    assert.equal(await customPage.locator('#page-title').textContent(), 'Dashboard.');
-    assert.match(await customPage.locator('#page-description').textContent(), /Ada/);
-    assert.equal((await customPage.locator('#chart-total').textContent()).replace(/\s/g,''), '1000,00zł');
+    assert.equal(
+      await customPage.locator('#page-title').textContent(),
+      'Dashboard.',
+    );
+    assert.match(
+      await customPage.locator('#page-description').textContent(),
+      /Ada/,
+    );
+    assert.equal(
+      (await customPage.locator('#chart-total').textContent()).replace(
+        /\s/g,
+        '',
+      ),
+      '1000,00zł',
+    );
     assert.equal(await customPage.locator('.month-group').count(), 3);
     assert.equal(await customPage.locator('.costs-panel').isVisible(), false);
-    assert.equal(await customPage.locator('#transactions-panel').isVisible(), false);
-    assert.equal(await customPage.locator('.demo-strip>span:first-child').isVisible(), false);
-    assert.match(await customPage.locator('.geography-panel .panel-foot').textContent(), /1 countries/);
+    assert.equal(
+      await customPage.locator('#transactions-panel').isVisible(),
+      false,
+    );
+    assert.equal(
+      await customPage.locator('.demo-strip>span:first-child').isVisible(),
+      false,
+    );
+    assert.match(
+      await customPage.locator('.geography-panel .panel-foot').textContent(),
+      /1 countries/,
+    );
     await customPage.keyboard.press('Alt+3');
-    assert.equal(await customPage.locator('.customer-name').textContent(), 'Ada <Lab>');
+    assert.equal(
+      await customPage.locator('.customer-name').textContent(),
+      'Ada <Lab>',
+    );
     assert.equal(await customPage.locator('.customer-name lab').count(), 0);
     await customPage.keyboard.press('Alt+1');
-    const customDownloadPromise=customPage.waitForEvent('download');
+    const customDownloadPromise = customPage.waitForEvent('download');
     await customPage.locator('#export-button').click();
-    const customDownload=await customDownloadPromise;
-    assert.equal(customDownload.suggestedFilename(),'north-monthly-30-days.csv');
-    const customCsv=await fs.readFile(await customDownload.path(),'utf8');
-    assert.match(customCsv,/Total revenue PLN/);assert.match(customCsv,/Revenue 2027 PLN/);
+    const customDownload = await customDownloadPromise;
+    assert.equal(
+      customDownload.suggestedFilename(),
+      'north-monthly-30-days.csv',
+    );
+    const customCsv = await fs.readFile(await customDownload.path(), 'utf8');
+    assert.match(customCsv, /Total revenue PLN/);
+    assert.match(customCsv, /Revenue 2027 PLN/);
     await customContext.close();
-    console.log('PASS custom brand, profile, PLN formatting, real chart data, hidden sections, non-demo mode, safe text and branded exports');
+    console.log(
+      'PASS custom brand, profile, PLN formatting, real chart data, hidden sections, non-demo mode, safe text and branded exports',
+    );
+    const offlineContext = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+    });
+    await offlineContext.route('https://flagcdn.com/**', (route) =>
+      route.abort(),
+    );
+    const offlinePage = await offlineContext.newPage();
+    offlinePage.on('pageerror', (error) => errors.push(error.message));
+    await offlinePage.goto('http://127.0.0.1:4180/', {
+      waitUntil: 'networkidle',
+    });
+    await offlinePage.waitForFunction(() =>
+      [...document.querySelectorAll('#country-list img')].every(
+        (img) =>
+          img.complete && img.naturalWidth > 0 && img.dataset.localFallback,
+      ),
+    );
+    assert.equal(
+      await offlinePage.locator('#country-list .flag-loaded').count(),
+      4,
+    );
+    await offlinePage
+      .locator('.geography-panel')
+      .screenshot({ path: path.join(artifacts, 'countries-390.png') });
+    await offlinePage.locator('#geography-button').click();
+    await offlinePage.waitForFunction(() =>
+      [...document.querySelectorAll('#dialog-body img')].every(
+        (img) => img.complete && img.naturalWidth > 0,
+      ),
+    );
+    assert.equal(
+      await offlinePage.locator('#dialog-body .flag-loaded').count(),
+      4,
+    );
+    await offlinePage.keyboard.press('Escape');
+    await offlinePage.route('**/dashboard.config.js', (route) =>
+      route.fulfill({
+        contentType: 'text/javascript',
+        body:
+          source +
+          `
+      window.DASHBOARD_CONFIG.geography.regions=[{code:'ZZ',name:'Unknown region',share:100}];
+    `,
+      }),
+    );
+    await offlinePage.reload({ waitUntil: 'networkidle' });
+    await offlinePage.waitForFunction(
+      () => document.querySelector('#country-list img').hidden,
+    );
+    assert.equal(
+      await offlinePage.locator('.flag-placeholder').textContent(),
+      'ZZ',
+    );
+    assert.equal(
+      await offlinePage.locator('.country-name').textContent(),
+      'Unknown region',
+    );
+    await offlineContext.close();
+    console.log(
+      'PASS real flag assets, GB country code, accurate share bars, offline flag fallback and unavailable-country placeholder',
+    );
     assert.deepEqual(errors, []);
     console.log('PASS no browser errors or failed requests');
-  } finally { await browser.close(); }
-})().catch(error => { console.error(error); process.exitCode = 1; });
+  } finally {
+    await browser.close();
+  }
+})().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
